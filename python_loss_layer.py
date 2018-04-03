@@ -17,7 +17,7 @@ def getLossWeight(label): # handle imbalance between positive and negative sampl
     assert(pos_weight.shape == label.shape)
     l = len(pos_weight)
     w = np.zeros(l, dtype=np.float32)
-    for i in range(l)
+    for i in range(l):
         if label[i] > 0:
             w[i] = pos_weight[i]
         else:
@@ -115,5 +115,5 @@ class TrainValWeightedEuclideanLossLayer(caffe.Layer):
             weights = self.norm_trend * self.norm_loss
             norm_weights = weights / np.mean(weights)
             repmated_weight = np.tile(norm_weights, [self.batch, 1])
-            bottom[i].diff[0:self.batch] =
+            bottom[i].diff[0:self.batch] = \
                 sign * getLossWeight(bottom[1-i].data[0:self.batch]) * repmated_weight * self.diff[0:self.batch] / self.batch
