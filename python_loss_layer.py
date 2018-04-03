@@ -18,10 +18,12 @@ def getLossWeight(label): # handle imbalance between positive and negative sampl
     attribute_size = label.shape[1]
     assert(attribute_size == pos_weight.shape[0])
 
-    w = np.zero_like(label, dtype=np.float32)
+    w = np.zeros_like(label, dtype=np.float32)
     for b in range(batch_size):
-        for a in range(attribute_sizel):
+        for a in range(attribute_size):
             w[b][a] = pos_weight[a] if label[b][a] > 0 else neg_weight[a]
+
+    return w
 
 
 class EuclideanLossLayer(caffe.Layer):
