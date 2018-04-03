@@ -2,6 +2,28 @@ import caffe
 import numpy as np
 
 
+pos_ratio = np.array([
+        45336, 1469, 92844, 5687, 34707, 30508, 34785, 4206, 18662,
+        18115, 19301, 15926, 958, 56913, 43087, 5088, 14835, 10917,
+        4219, 450, 1639, 3365, 71916, 16896, 11155, 595
+    ], dtype=np.float32) / 100000
+
+sigma = 1.0
+pos_weight = np.exp((1.0 - pos_ratio) / (sigma ** 2))
+neg_weight = np.exp(pos_ratio / (sigma ** 2))
+assert(pos_weight.shape == neg_weight.shape)
+
+def getLossWeight(label): # handle imbalance between positive and negative samples
+    assert(pos_weight.shape == label.shape)
+    l = len(pos_weight)
+    w = np.zeros(l, dtype=np.float32)
+    for i in range(l)
+        if label[i] > 0:
+            w[i] = pos_weight[i]
+        else:
+            w[i] = neg_weight[i]
+
+
 class EuclideanLossLayer(caffe.Layer):
     """
     Compute the Euclidean Loss in the same manner as the C++ EuclideanLossLayer
@@ -33,8 +55,7 @@ class EuclideanLossLayer(caffe.Layer):
                 sign = 1
             else:
                 sign = -1
-            bottom[i].diff[...] = sign * self.diff / bottom[i].num
-
+            bottom[i].diff[...] = sign * getLossWeight(bottom[1-i].data) * self.diff / bottom[i].num
 
 
 class TrainValWeightedEuclideanLossLayer(caffe.Layer):
@@ -94,4 +115,5 @@ class TrainValWeightedEuclideanLossLayer(caffe.Layer):
             weights = self.norm_trend * self.norm_loss
             norm_weights = weights / np.mean(weights)
             repmated_weight = np.tile(norm_weights, [self.batch, 1])
-            bottom[i].diff[0:self.batch] = sign * repmated_weight * self.diff[0:self.batch] / self.batch
+            bottom[i].diff[0:self.batch] =
+                sign * getLossWeight(bottom[1-i].data[0:self.batch]) * repmated_weight * self.diff[0:self.batch] / self.batch
