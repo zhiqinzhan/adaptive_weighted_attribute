@@ -8,9 +8,10 @@ pos_ratio = np.array([
         4219, 450, 1639, 3365, 71916, 16896, 11155, 595
     ], dtype=np.float32) / 100000
 
-sigma = 1.0
-pos_weight = np.exp((1.0 - pos_ratio) / (sigma ** 2))
-neg_weight = np.exp(pos_ratio / (sigma ** 2))
+sigma = 0.5
+avg_weight = np.exp(0.5 / (sigma ** 2))
+pos_weight = np.exp((1.0 - pos_ratio) / (sigma ** 2)) / avg_weight
+neg_weight = np.exp(pos_ratio / (sigma ** 2)) / avg_weight
 assert(pos_weight.shape == neg_weight.shape)
 
 def getLossWeight(label): # handle imbalance between positive and negative samples
