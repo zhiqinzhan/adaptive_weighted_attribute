@@ -93,7 +93,7 @@ class TrainValWeightedEuclideanLossLayer(caffe.Layer):
 
     def forward(self, bottom, top):
         self.diff[...] = bottom[0].data - bottom[1].data
-        self.val_loss.append(np.sum(self.diff[self.batch:]**2, axis=0))
+        self.val_loss.append(np.sum((getLossWeight(bottom[1].data[self.batch:]) * self.diff[self.batch:]) ** 2, axis=0)) # assert that bottom[1] is the ground truth
         top[0].data[...] = np.sum(self.diff[0:self.batch]**2) / self.batch / 2.
         self.count += 1
 
