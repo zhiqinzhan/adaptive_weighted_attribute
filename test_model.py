@@ -25,7 +25,7 @@ a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
 prototxt_path = 'deploy_resnet.prototxt'
-model_path = 'model/saved_weighted__iter_130000.caffemodel'
+model_path = 'model/basic_saved_weighted__iter_130000.caffemodel'
 net = caffe.Net(prototxt_path, model_path, caffe.TEST)
 
 target_height = 224
