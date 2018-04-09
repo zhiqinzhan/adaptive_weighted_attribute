@@ -38,6 +38,10 @@ def showImage(img, points=None, bbox=None):
     print 'here'
 
 
+class TrainLayer(ValLayer):
+    imgset = 'train'
+
+
 class ValLayer(caffe.Layer):
 
     attri_num = 26
