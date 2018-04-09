@@ -12,5 +12,5 @@ max_iter:  130000
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 5000
-snapshot_prefix: "basic_model/saved_weighted_"
+snapshot_prefix: "model/basic_saved_weighted_"
 solver_mode: GPU

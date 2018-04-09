@@ -38,10 +38,6 @@ def showImage(img, points=None, bbox=None):
     print 'here'
 
 
-class TrainLayer(ValLayer):
-    imgset = 'train'
-
-
 class ValLayer(caffe.Layer):
 
     attri_num = 26
@@ -89,6 +85,10 @@ class ValLayer(caffe.Layer):
 
     def backward(self, top, propagate_down, bottom):
         pass
+
+
+class TrainLayer(ValLayer):
+    imgset = 'train'
 
 
 class JointAttributeLayer(caffe.Layer):
