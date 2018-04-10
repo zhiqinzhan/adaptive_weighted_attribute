@@ -29,7 +29,9 @@ def getLossWeight(label): # handle imbalance between positive and negative sampl
     return w
 
 
-class CrossEntropyLossLayer(caffe.Layer):
+gamma = 2.0
+
+class SigmoidFocalLossLayer(caffe.Layer):
     def setup(self, bottom, top):
         # check input pair
         if len(bottom) != 2:
@@ -39,16 +41,49 @@ class CrossEntropyLossLayer(caffe.Layer):
         # check input dimensions match
         if bottom[0].count != bottom[1].count:
             raise Exception("Inputs must have the same dimension.")
-        # difference is shape of inputs
-        self.diff = np.zeros_like(bottom[0].data, dtype=np.float32)
         # loss output is scalar
         top[0].reshape(1)
 
     def forward(self, bottom, top):
-        p = bottom[0].data # bottom[0]: estimated probability
-        y = bottom[1].data # bottom[1]: ground-truth
+        x = bottom[0].data
+        y = bottom[1].data # ground-truth
 
-        pt = p.copy()
+        pt = scipy.special.expit(x)
+        for i in range(pt.shape[0]):
+            for j in range(pt.shape[1]):
+                if y[i][j] < 0:
+                    pt[i][j] = 1 - pt[i][j]
+
+        top[0].data[...] = np.sum(-((1 - pt) ** gamma) * np.log(pt)) / pt.shape[0]
+        self.pt = pt
+
+    def backward(self, top, propagate_down, bottom):
+        if propagate_down[1]:
+            raise Exception("Layer cannot backpropagate to label inputs.")
+        if propagate_down[0]:
+            y = bottom[1].data # ground-truth
+            pt = self.pt
+            bottom[0].diff[...] = y * ((1 - pt) ** gamma) * (gamma * pt * np.log(pt) + pt - 1) / pt.shape[0]
+
+
+class SigmoidCrossEntropyLossLayer(caffe.Layer):
+    def setup(self, bottom, top):
+        # check input pair
+        if len(bottom) != 2:
+            raise Exception("Need two inputs (scores and labels) to compute crossentropy loss.")
+
+    def reshape(self, bottom, top):
+        # check input dimensions match
+        if bottom[0].count != bottom[1].count:
+            raise Exception("Inputs must have the same dimension.")
+        # loss output is scalar
+        top[0].reshape(1)
+
+    def forward(self, bottom, top):
+        x = bottom[0].data
+        y = bottom[1].data # ground-truth
+
+        pt = scipy.special.expit(x)
         for i in range(pt.shape[0]):
             for j in range(pt.shape[1]):
                 if y[i][j] < 0:
@@ -61,7 +96,9 @@ class CrossEntropyLossLayer(caffe.Layer):
         if propagate_down[1]:
             raise Exception("Layer cannot backpropagate to label inputs.")
         if propagate_down[0]:
-            bottom[0].diff[...] = bottom[1].data * (self.pt - 1) / self.pt.shape[0]
+            y = bottom[1].data # ground-truth
+            pt = self.pt
+            bottom[0].diff[...] = y * (pt - 1) / pt.shape[0]
 
 
 class EuclideanLossLayer(caffe.Layer):
