@@ -1,6 +1,6 @@
 import caffe
 import numpy as np
-
+import scipy
 
 pos_ratio = np.array([
         45336, 1469, 92844, 5687, 34707, 30508, 34785, 4206, 18662,
