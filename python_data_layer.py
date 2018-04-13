@@ -16,9 +16,7 @@ proto_data = open(mean_file, "rb").read()
 a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
-selected_attr = np.zeros(26)
-for attr_index in range(26):
-    selected_attr[attr_index] = attr_index
+selected_attr = np.asarray(range(26), dtype=np.int)
 
 
 def pre_process(color_img):
@@ -87,8 +85,61 @@ class ValLayer(caffe.Layer):
         pass
 
 
-class TrainLayer(ValLayer):
+# class TrainLayer(ValLayer):
+#     imgset = 'train'
+
+class TrainLayer(caffe.Layer):
+
+    attri_num = 26
+    target_height = 224
+    target_witdh = 224
+    batch = 18
     imgset = 'train'
+
+    def setup(self, bottom, top):
+        # total_namelist
+        # attri_array
+        # img_num
+        # pos_sample_list
+
+        self.total_namelist = [os.path.join(datadir, 'release_data', name[0][0]) \
+                               for name in annotation[self.imgset+'_images_name']]
+        self.img_num = len(self.total_namelist)
+        
+        self.attri_array = annotation[self.imgset+'_label']
+        self.attri_array = self.attri_array.astype(int)
+        self.attri_array[self.attri_array == 0] = -1
+
+        self.pos_sample_list = [ [] for i in range(self.attri_num) ]
+        for i in range(self.img_num):
+            for j in range(self.attri_num):
+                if self.attri_array[i][j] > 0:
+                    self.pos_sample_list[j].append(i)
+        self.pos_sample_list = [ np.asarray(x) for x in self.pos_sample_list ]
+
+        top[0].reshape(self.batch, 3, self.target_height, self.target_witdh)
+        top[1].reshape(self.batch, len(selected_attr))
+
+    def reshape(self, bottom, top):
+        pass
+
+    def forward(self, bottom, top):
+        sample_idx = []
+        # for i in range(self.attri_num):
+        #     sample_idx.append(np.random.choice(self.pos_sample_list[i]))
+        for i in range(len(selected_attr)):
+            sample_idx.append(np.random.choice(self.pos_sample_list[selected_attr[i]]))
+        sample_idx = random.shuffle(sample_idx)[:self.batch]
+
+        for i, idx in enumerate(sample_idx):
+            im = cv2.imread(self.total_namelist[idx])
+            if im is not None:
+                top[0].data[i] = pre_process(im)
+                for k in range(len(selected_attr)):
+                    top[1].data[i][k] = self.attri_array[idx][selected_attr[k]]
+
+    def backward(self, top, propagate_down, bottom):
+        pass
 
 
 class JointAttributeLayer(caffe.Layer):
