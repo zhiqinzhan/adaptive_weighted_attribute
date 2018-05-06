@@ -16,8 +16,8 @@ proto_data = open(mean_file, "rb").read()
 a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
-selected_attr = np.asarray(range(26), dtype=np.int)
-
+# selected_attr = np.asarray(range(26), dtype=np.int)
+selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
 
 def pre_process(color_img):
     resized_img = cv2.resize(color_img, (224, 224))
@@ -129,11 +129,9 @@ class TrainLayer(caffe.Layer):
         # for i in range(self.attri_num):
         #     sample_idx.append(np.random.choice(self.pos_sample_list[i]))
 
-        # for i in range(len(selected_attr)):
-        #     sample_idx.append(np.random.choice(self.pos_sample_list[selected_attr[i]]))
-
-        for i in [1, 7, 12, 19, 20, 21, 25, 1, 7, 12, 19, 20, 21, 25, 1, 7, 12, 19, 20, 21, 25]:
-            sample_idx.append(np.random.choice(self.pos_sample_list[i]))
+        while len(sample_idx) < self.batch:
+            for i in range(len(selected_attr)):
+                sample_idx.append(np.random.choice(self.pos_sample_list[selected_attr[i]]))
 
         random.shuffle(sample_idx)
         sample_idx = sample_idx[:self.batch]
