@@ -5,8 +5,11 @@ import os
 import time
 import scipy.io as sio
 
+# selected_attr = np.asarray(range(26), dtype=np.int)
+selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
+
 caffe.set_mode_gpu()
-caffe.set_device(1)
+caffe.set_device(2)
 
 datadir = 'data/PA-100K/'
 annotation = sio.loadmat(os.path.join(datadir, 'annotation.mat'))
@@ -24,7 +27,7 @@ proto_data = open(mean_file, "rb").read()
 a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
-prototxt_path = 'deploy_resnet.prototxt'
+prototxt_path = 'rare_deploy_resnet.prototxt'
 model_path = 'model/CrossEntropy_saved_weighted__iter_5000.caffemodel'
 net = caffe.Net(prototxt_path, model_path, caffe.TEST)
 
@@ -36,7 +39,7 @@ def pre_process(color_img, is_mirror=False):
         resized_img = cv2.flip(resized_img, 1)
     return np.transpose(resized_img, (2, 0, 1)) - mean
 
-attri_num = 26
+attri_num = len(selected_attr)
 TP_sum = np.zeros(attri_num, dtype=np.int)
 FN_sum = np.zeros(attri_num, dtype=np.int)
 FP_sum = np.zeros(attri_num, dtype=np.int)
@@ -55,7 +58,7 @@ for i in xrange(img_num):
     score = np.mean(out['pred_attribute'], axis=0)
     pred = score > 0
 
-    GT = attri_array[i] 
+    GT = np.asarray([attri_array[i][j] for j in selected_attr], dtype=np.int)
     TP = np.logical_and(pred, GT)
     FN = np.logical_and(np.logical_not(pred), GT)
     FP = np.logical_and(pred, np.logical_not(GT))
