@@ -125,10 +125,16 @@ class TrainLayer(caffe.Layer):
 
     def forward(self, bottom, top):
         sample_idx = []
+
         # for i in range(self.attri_num):
         #     sample_idx.append(np.random.choice(self.pos_sample_list[i]))
-        for i in range(len(selected_attr)):
-            sample_idx.append(np.random.choice(self.pos_sample_list[selected_attr[i]]))
+
+        # for i in range(len(selected_attr)):
+        #     sample_idx.append(np.random.choice(self.pos_sample_list[selected_attr[i]]))
+
+        for i in [1, 7, 12, 19, 20, 21, 25, 1, 7, 12, 19, 20, 21, 25, 1, 7, 12, 19, 20, 21, 25]:
+            sample_idx.append(np.random.choice(self.pos_sample_list[i]))
+
         random.shuffle(sample_idx)
         sample_idx = sample_idx[:self.batch]
 
