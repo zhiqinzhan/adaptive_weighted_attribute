@@ -6,7 +6,7 @@ import time
 import scipy.io as sio
 
 caffe.set_mode_gpu()
-caffe.set_device(0)
+caffe.set_device(1)
 
 datadir = 'data/PA-100K/'
 annotation = sio.loadmat(os.path.join(datadir, 'annotation.mat'))

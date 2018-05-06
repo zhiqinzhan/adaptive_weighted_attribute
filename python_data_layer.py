@@ -129,7 +129,8 @@ class TrainLayer(caffe.Layer):
         #     sample_idx.append(np.random.choice(self.pos_sample_list[i]))
         for i in range(len(selected_attr)):
             sample_idx.append(np.random.choice(self.pos_sample_list[selected_attr[i]]))
-        sample_idx = random.shuffle(sample_idx)[:self.batch]
+        random.shuffle(sample_idx)
+        sample_idx = sample_idx[:self.batch]
 
         for i, idx in enumerate(sample_idx):
             im = cv2.imread(self.total_namelist[idx])
