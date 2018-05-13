@@ -28,7 +28,7 @@ a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
 prototxt_path = 'rare_deploy_resnet.prototxt'
-model_path = 'model/CrossEntropy_saved_weighted__iter_5000.caffemodel'
+model_path = 'model/rare_CrossEntropy_saved_weighted__iter_2500.caffemodel'
 net = caffe.Net(prototxt_path, model_path, caffe.TEST)
 
 target_height = 224
