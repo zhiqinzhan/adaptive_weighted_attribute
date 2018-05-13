@@ -16,11 +16,12 @@ proto_data = open(mean_file, "rb").read()
 a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
-# selected_attr = np.asarray(range(26), dtype=np.int)
-selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
+selected_attr = np.asarray(range(26), dtype=np.int)
+# selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
 
 def pre_process(color_img):
     resized_img = cv2.resize(color_img, (224, 224))
+    resized_img = (resized_img > np.random.randint(256, size=resized_img.shape)) * 255
     return np.transpose(resized_img, (2, 0, 1)) - mean
 
 

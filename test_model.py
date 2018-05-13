@@ -5,8 +5,8 @@ import os
 import time
 import scipy.io as sio
 
-# selected_attr = np.asarray(range(26), dtype=np.int)
-selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
+selected_attr = np.asarray(range(26), dtype=np.int)
+# selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
 
 caffe.set_mode_gpu()
 caffe.set_device(2)
@@ -27,8 +27,8 @@ proto_data = open(mean_file, "rb").read()
 a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
-prototxt_path = 'rare_deploy_resnet.prototxt'
-model_path = 'model/rare_CrossEntropy_saved_weighted__iter_2500.caffemodel'
+prototxt_path = 'deploy_resnet.prototxt'
+model_path = 'model/CrossEntropy_saved_weighted__iter_130000.caffemodel'
 net = caffe.Net(prototxt_path, model_path, caffe.TEST)
 
 target_height = 224
