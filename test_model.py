@@ -37,6 +37,7 @@ def pre_process(color_img, is_mirror=False):
     resized_img = cv2.resize(color_img, (target_width, target_height))
     if is_mirror:
         resized_img = cv2.flip(resized_img, 1)
+    resized_img = (resized_img > np.random.randint(256, size=resized_img.shape)) * 255
     return np.transpose(resized_img, (2, 0, 1)) - mean
 
 attri_num = len(selected_attr)
@@ -48,8 +49,9 @@ TN_sum = np.zeros(attri_num, dtype=np.int)
 for i in xrange(img_num):
     img = cv2.imread(total_namelist[i])
     assert img is not None
-    inputData = np.array([pre_process(img, False), pre_process(img, True)])
-    net.set_input_arrays(inputData.astype(np.float32), np.zeros([2, 1, 1, 1]).astype(np.float32))
+    batch = 18
+    inputData = np.array([pre_process(img, j % 2 == 1) for j in range(batch)])
+    net.set_input_arrays(inputData.astype(np.float32), np.zeros([batch, 1, 1, 1]).astype(np.float32))
  
     start_time = time.time()
     out = net.forward()
