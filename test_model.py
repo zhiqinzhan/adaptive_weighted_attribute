@@ -41,10 +41,14 @@ def pre_process(color_img, is_mirror=False):
     return np.transpose(resized_img, (2, 0, 1)) - mean
 
 attri_num = len(selected_attr)
+attr_pred = np.zeros((img_num, attri_num), dtype=np.bool)
+attr_gt = np.zeros((img_num, attri_num), dtype=np.bool)
+"""
 TP_sum = np.zeros(attri_num, dtype=np.int)
 FN_sum = np.zeros(attri_num, dtype=np.int)
 FP_sum = np.zeros(attri_num, dtype=np.int)
 TN_sum = np.zeros(attri_num, dtype=np.int)
+"""
 
 for i in xrange(img_num):
     img = cv2.imread(total_namelist[i])
@@ -59,11 +63,13 @@ for i in xrange(img_num):
     out = net.forward()
     print "%s: %f seconds" % (total_namelist[i], (time.time() - start_time))
 
-    score = np.mean(out['pred_attribute'], axis=0)
-    pred = score > 0
-
+    pred = np.mean(out['pred_attribute'], axis=0) > 0
     GT = np.asarray([attri_array[i][j] for j in selected_attr], dtype=np.int)
+
+    attr_pred[i] = pred
+    attr_gt[i] = GT
     
+    """
     TP = np.logical_and(pred, GT)
     FN = np.logical_and(np.logical_not(pred), GT)
     FP = np.logical_and(pred, np.logical_not(GT))
@@ -73,7 +79,40 @@ for i in xrange(img_num):
     FN_sum += FN
     FP_sum += FP
     TN_sum += TN
+    """
 
+def example_based(attr, gt):
+	num = attr.__len__()
+	num_attr = attr[0].__len__()
+
+	acc = 0
+	prec = 0
+	rec = 0
+	f1 = 0
+
+	attr = np.array(attr).astype(bool)
+	gt = np.array(gt).astype(bool)
+	
+	for i in xrange(num):
+		intersect = sum((attr[i] & gt[i]).astype(float))
+		union = sum((attr[i] | gt[i]).astype(float))
+		attr_sum = sum((attr[i]).astype(float))
+		gt_sum = sum((gt[i]).astype(float))
+		
+		acc += intersect / union
+		prec += intersect / attr_sum
+		rec += intersect / gt_sum
+	
+	acc /= num
+	prec /= num
+	rec /= num
+	f1 = 2 * prec * rec / (prec + rec)
+
+	return acc, prec, rec, f1
+
+accuracy, precision, recall, f1 = example_based(attr_pred, attr_gt)
+
+"""
 print "TP:", TP_sum
 print "FN:", FN_sum
 print "FP:", FP_sum
@@ -88,12 +127,13 @@ precision = TP_sum / (TP_sum + FP_sum)
 recall = TP_sum / (TP_sum + FN_sum)
 f1 = (2 * TP_sum) / (2 * TP_sum + FP_sum + FN_sum)
 accuracy = (TP_sum + TN_sum) / img_num
+"""
 
 print "precision:", precision
-print "mean precision:", np.mean(precision)
+# print "mean precision:", np.mean(precision)
 print "recall:", recall
-print "mean recall:", np.mean(recall)
+# print "mean recall:", np.mean(recall)
 print "f1", f1
-print "mean f1:", np.mean(f1)
+# print "mean f1:", np.mean(f1)
 print "accuracy:", accuracy
-print "mean accuracy:", np.mean(accuracy)
+# print "mean accuracy:", np.mean(accuracy)
