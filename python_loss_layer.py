@@ -55,7 +55,7 @@ class SigmoidFocalLossLayer(caffe.Layer):
                     pt[i][j] = 1 - pt[i][j]
         
         self.pt = pt
-        self.log_pt = x * ((y >= 0) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
+        self.log_pt = x * ((y >= 0).astype(int) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
 
         top[0].data[...] = np.sum(-((1 - pt) ** gamma) * self.log_pt) / pt.shape[0]
 
@@ -92,7 +92,7 @@ class SigmoidCrossEntropyLossLayer(caffe.Layer):
                     pt[i][j] = 1 - pt[i][j]
         
         self.pt = pt
-        self.log_pt = x * ((y >= 0) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
+        self.log_pt = x * ((y >= 0).astype(int) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
 
         top[0].data[...] = np.sum(-self.log_pt) / pt.shape[0]
 
@@ -230,7 +230,7 @@ class TrainValWeightedSigmoidCrossEntropyLossLayer(caffe.Layer):
                     pt[i][j] = 1 - pt[i][j]
 
         self.pt = pt
-        self.log_pt = x * ((y >= 0) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
+        self.log_pt = x * ((y >= 0).astype(int) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
 
         batch_size = bottom[0].shape[0] / 2 # train: first half; val: second half;
         top[0].data[...] = np.sum(-self.log_pt[:batch_size]) / batch_size
