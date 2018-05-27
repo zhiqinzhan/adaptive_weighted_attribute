@@ -53,9 +53,11 @@ class SigmoidFocalLossLayer(caffe.Layer):
             for j in range(pt.shape[1]):
                 if y[i][j] < 0:
                     pt[i][j] = 1 - pt[i][j]
-
-        top[0].data[...] = np.sum(-((1 - pt) ** gamma) * np.log(pt)) / pt.shape[0]
+        
         self.pt = pt
+        self.log_pt = x * ((y >= 0) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
+
+        top[0].data[...] = np.sum(-((1 - pt) ** gamma) * self.log_pt) / pt.shape[0]
 
     def backward(self, top, propagate_down, bottom):
         if propagate_down[1]:
@@ -63,7 +65,7 @@ class SigmoidFocalLossLayer(caffe.Layer):
         if propagate_down[0]:
             y = bottom[1].data # ground-truth
             pt = self.pt
-            bottom[0].diff[...] = y * ((1 - pt) ** gamma) * (gamma * pt * np.log(pt) + pt - 1) / pt.shape[0]
+            bottom[0].diff[...] = y * ((1 - pt) ** gamma) * (gamma * pt * self.log_pt + pt - 1) / pt.shape[0]
 
 
 class SigmoidCrossEntropyLossLayer(caffe.Layer):
@@ -88,9 +90,11 @@ class SigmoidCrossEntropyLossLayer(caffe.Layer):
             for j in range(pt.shape[1]):
                 if y[i][j] < 0:
                     pt[i][j] = 1 - pt[i][j]
-
-        top[0].data[...] = np.sum(-np.log(pt)) / pt.shape[0]
+        
         self.pt = pt
+        self.log_pt = x * ((y >= 0) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
+
+        top[0].data[...] = np.sum(-self.log_pt) / pt.shape[0]
 
     def backward(self, top, propagate_down, bottom):
         if propagate_down[1]:
@@ -226,10 +230,11 @@ class TrainValWeightedSigmoidCrossEntropyLossLayer(caffe.Layer):
                     pt[i][j] = 1 - pt[i][j]
 
         self.pt = pt
+        self.log_pt = x * ((y >= 0) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
 
         batch_size = bottom[0].shape[0] / 2 # train: first half; val: second half;
-        top[0].data[...] = np.sum(-np.log(pt[:batch_size])) / batch_size
-        self.val_loss.append(np.sum(-np.log(pt[batch_size:]), axis=0))
+        top[0].data[...] = np.sum(-self.log_pt[:batch_size]) / batch_size
+        self.val_loss.append(np.sum(-self.log_pt[batch_size:], axis=0))
         self.count += 1
 
     def backward(self, top, propagate_down, bottom):
