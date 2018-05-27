@@ -10,7 +10,7 @@ stepvalue: 100000
 stepvalue: 120000
 max_iter:  130000
 momentum: 0.9
-weight_decay: 0.0005
+weight_decay: 0.0001
 snapshot: 5000
-snapshot_prefix: "model/saved_weighted_"
+snapshot_prefix: "model/new_saved_weighted_"
 solver_mode: GPU

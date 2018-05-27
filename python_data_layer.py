@@ -86,9 +86,10 @@ class ValLayer(caffe.Layer):
         pass
 
 
-# class TrainLayer(ValLayer):
-#     imgset = 'train'
+class TrainLayer(ValLayer):
+    imgset = 'train'
 
+"""
 class TrainLayer(caffe.Layer):
 
     attri_num = 26
@@ -146,6 +147,7 @@ class TrainLayer(caffe.Layer):
 
     def backward(self, top, propagate_down, bottom):
         pass
+"""
 
 
 class JointAttributeLayer(caffe.Layer):

@@ -9,7 +9,7 @@ selected_attr = np.asarray(range(26), dtype=np.int)
 # selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
 
 caffe.set_mode_gpu()
-caffe.set_device(2)
+caffe.set_device(3)
 
 datadir = 'data/PA-100K/'
 annotation = sio.loadmat(os.path.join(datadir, 'annotation.mat'))
@@ -28,7 +28,7 @@ a = caffe.io.caffe_pb2.BlobProto.FromString(proto_data)
 mean = caffe.io.blobproto_to_array(a)[0]
 
 prototxt_path = 'deploy_resnet.prototxt'
-model_path = 'model/archive/joint_Euclidean_w1_iter_130000.caffemodel'
+model_path = 'model/new_saved_weighted__iter_130000.caffemodel'
 net = caffe.Net(prototxt_path, model_path, caffe.TEST)
 
 target_height = 224
@@ -68,6 +68,9 @@ for i in xrange(img_num):
 
     attr_pred[i] = pred
     attr_gt[i] = GT
+
+    print GT
+    print pred
     
     """
     TP = np.logical_and(pred, GT)

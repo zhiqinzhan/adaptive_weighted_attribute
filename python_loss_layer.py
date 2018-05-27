@@ -206,6 +206,7 @@ class TrainValWeightedSigmoidCrossEntropyLossLayer(caffe.Layer):
         
         self.count = 0
         self.val_loss = []
+        self.norm_weights = np.ones(bottom[0].data.shape[1])
 
     def reshape(self, bottom, top):
         # check input dimensions match
