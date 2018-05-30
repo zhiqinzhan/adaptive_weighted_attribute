@@ -84,36 +84,9 @@ for i in xrange(img_num):
     TN_sum += TN
     """
 
-def example_based(attr, gt):
-	num = attr.__len__()
-	num_attr = attr[0].__len__()
-
-	acc = 0
-	prec = 0
-	rec = 0
-	f1 = 0
-
-	attr = np.array(attr).astype(bool)
-	gt = np.array(gt).astype(bool)
-	
-	for i in xrange(num):
-		intersect = sum((attr[i] & gt[i]).astype(float))
-		union = sum((attr[i] | gt[i]).astype(float))
-		attr_sum = sum((attr[i]).astype(float))
-		gt_sum = sum((gt[i]).astype(float))
-		
-		acc += intersect / union
-		prec += intersect / attr_sum
-		rec += intersect / gt_sum
-	
-	acc /= num
-	prec /= num
-	rec /= num
-	f1 = 2 * prec * rec / (prec + rec)
-
-	return acc, prec, rec, f1
-
+from evaluate import example_based, mA
 accuracy, precision, recall, f1 = example_based(attr_pred, attr_gt)
+mA, acc_collect, challenging = mA(attr_pred, attr_gt)
 
 """
 print "TP:", TP_sum
@@ -140,3 +113,7 @@ print "f1", f1
 # print "mean f1:", np.mean(f1)
 print "accuracy:", accuracy
 # print "mean accuracy:", np.mean(accuracy)
+
+print "mA:", mA
+print "acc_collect", acc_collect
+print "challenging", challenging
