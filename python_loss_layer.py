@@ -57,7 +57,7 @@ class SigmoidFocalLossLayer(caffe.Layer):
         self.pt = pt
         self.log_pt = x * ((y >= 0).astype(int) - (x >= 0)) - np.log(1 + np.exp(x - 2 * x * (x >= 0)))
 
-        top[0].data[...] = np.sum(-((1 - pt) ** gamma) * self.log_pt) / pt.shape[0]
+        top[0].data[...] = np.sum(-((1 - pt) ** self.gamma) * self.log_pt) / pt.shape[0]
 
     def backward(self, top, propagate_down, bottom):
         if propagate_down[1]:
@@ -65,7 +65,7 @@ class SigmoidFocalLossLayer(caffe.Layer):
         if propagate_down[0]:
             y = bottom[1].data # ground-truth
             pt = self.pt
-            bottom[0].diff[...] = y * ((1 - pt) ** gamma) * (gamma * pt * self.log_pt + pt - 1) / pt.shape[0]
+            bottom[0].diff[...] = y * ((1 - pt) ** self.gamma) * (self.gamma * pt * self.log_pt + pt - 1) / pt.shape[0]
 
 
 class SigmoidCrossEntropyLossLayer(caffe.Layer):
