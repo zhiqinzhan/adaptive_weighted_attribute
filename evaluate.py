@@ -19,6 +19,7 @@
 # If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from __future__ import division
 import numpy as np
 
 def mA(attr, gt):
