@@ -19,10 +19,11 @@ mean = caffe.io.blobproto_to_array(a)[0]
 selected_attr = np.asarray(range(26), dtype=np.int)
 # selected_attr = np.asarray([1, 7, 12, 19, 20, 21, 25], dtype=np.int)
 
+resized_mean = np.transpose(cv2.resize(np.transpose(mean, (1, 2, 0)), (224, 448)), (2, 0, 1))
 def pre_process(color_img):
-    resized_img = cv2.resize(color_img, (224, 224))
+    resized_img = cv2.resize(color_img, (224, 448))
     # resized_img = (resized_img > np.random.randint(256, size=resized_img.shape)) * 255
-    return np.transpose(resized_img, (2, 0, 1)) - mean
+    return np.transpose(resized_img, (2, 0, 1)) - resized_mean
 
 
 def showImage(img, points=None, bbox=None):
@@ -50,10 +51,10 @@ class ValLayer(caffe.Layer):
     # landmark_array =[]
     img_num = 0
 
-    target_height = 224
+    target_height = 448
     target_witdh = 224
     # mean = []
-    batch = 18
+    batch = 8
     imgset = 'val'
 
 
@@ -166,9 +167,9 @@ class JointAttributeLayer(caffe.Layer):
     val_total_namelist = []
     val_attri_array =[]
     val_img_num = 0
-    target_height = 224
+    target_height = 448
     target_witdh = 224
-    batch = 9
+    batch = 4
     train_imgset = 'train'
     val_imgset = 'val'
 

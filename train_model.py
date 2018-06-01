@@ -6,10 +6,10 @@ niter = 200
 train_loss = np.zeros(niter)
 scratch_train_loss = np.zeros(niter)
 
-caffe.set_device(0)
+caffe.set_device(2)
 caffe.set_mode_gpu()
 # We create a solver that fine-tunes from a previously trained network.
-solver = caffe.SGDSolver('solver.prototxt')
+solver = caffe.SGDSolver('focal_solver.prototxt')
 solver.net.copy_from('model/resnet_50/ResNet-50-model.caffemodel')
 # solver.net.copy_from('../model/40_attri_vgg16_dlib_euclidean_iter_100.caffemodel')
 solver.solve()
