@@ -31,14 +31,15 @@ prototxt_path = 'deploy_resnet.prototxt'
 model_path = 'model/saved_weighted__iter_130000.caffemodel'
 net = caffe.Net(prototxt_path, model_path, caffe.TEST)
 
-target_height = 224
+target_height = 448
 target_width = 224
+resized_mean = np.transpose(cv2.resize(np.transpose(mean, (1, 2, 0)), (target_width, target_height)), (2, 0, 1))
 def pre_process(color_img, is_mirror=False):
     resized_img = cv2.resize(color_img, (target_width, target_height))
     if is_mirror:
         resized_img = cv2.flip(resized_img, 1)
     # resized_img = (resized_img > np.random.randint(256, size=resized_img.shape)) * 255
-    return np.transpose(resized_img, (2, 0, 1)) - mean
+    return np.transpose(resized_img, (2, 0, 1)) - resized_mean
 
 attri_num = len(selected_attr)
 attr_pred = np.zeros((img_num, attri_num), dtype=np.bool)
