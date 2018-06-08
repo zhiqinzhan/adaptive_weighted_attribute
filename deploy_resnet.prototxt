@@ -7,7 +7,7 @@ layer {
   memory_data_param {
     batch_size: 2#batch size, so how many prediction youu want to do at once. Best is "1", but higher number get better performance
     channels: 3
-    height: 224
+    height: 448
     width: 224
   }
 }
