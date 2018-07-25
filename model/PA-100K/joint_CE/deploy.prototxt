@@ -1,16 +1,19 @@
-name: "Face-ResNet"
+name: "ResNet-50"
+
 layer {
-  name: "data"
-  type: "MemoryData"
-  top: "data"
-  top: "label"
-  memory_data_param {
-    batch_size: 2#batch size, so how many prediction youu want to do at once. Best is "1", but higher number get better performance
-    channels: 3
-    height: 448
-    width: 224
-  }
+	name: "data"
+	type: "MemoryData"
+	top: "data"
+	top: "label"
+	memory_data_param {
+		batch_size: 2
+		channels: 3
+		height: 224
+		width: 224
+	}
 }
+
+//----------------------------------------------------------------
 
 layer {
 	bottom: "data"
@@ -2308,30 +2311,14 @@ layer {
 	}
 }
 
+//----------------------------------------------------------------
+
 layer {
-  name: "pred_attribute"
-  type: "InnerProduct"
-  bottom: "pool5"
-  top: "pred_attribute"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  inner_product_param {
-    num_output: 26
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
+	name: "pred_attribute"
+	type: "InnerProduct"
+	bottom: "pool5"
+	top: "pred_attribute"
+	inner_product_param {
+		num_output: 26
+	}
 }
-
-
-

@@ -1,33 +1,36 @@
 name: "ResNet-50"
 
 layer {
-  name: "data"
-  type: "Python"
-  top: "data"
-  top: "gt_regression_attribute"
-
-  python_param{
-    module: "python_data_layer"
-    layer: "TrainLayer"
-  }
-   include {
-    phase: TRAIN
-  }
+	name: "data"
+	type: "Python"
+	top: "data"
+	top: "gt_regression_attribute"
+	python_param {
+		module: "python_data_layer"
+		layer: "JointDataLayer"
+		param_str: "{'split_name0': 'train', 'split_name1': 'val'}"
+	}
+	include {
+		phase: TRAIN
+	}
 }
 
 layer {
-  name: "data"
-  type: "Python"
-  top: "data"
-  top: "gt_regression_attribute"
-  python_param{
-    module: "python_data_layer"
-    layer: "ValLayer"
-  }
- include {
-    phase: TEST
-  }
+	name: "data"
+	type: "Python"
+	top: "data"
+	top: "gt_regression_attribute"
+	python_param{
+		module: "python_data_layer"
+		layer: "DataLayer"
+		param_str: "{'split_name': 'val'}"
+	}
+	include {
+		phase: TEST
+	}
 }
+
+//----------------------------------------------------------------
 
 layer {
 	bottom: "data"
@@ -2325,51 +2328,72 @@ layer {
 	}
 }
 
+//----------------------------------------------------------------
+
 layer {
-  name: "pred_attribute"
-  type: "InnerProduct"
-  bottom: "pool5"
-  top: "pred_attribute"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  inner_product_param {
-    num_output: 26
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
-  }
+	name: "pred_attribute"
+	type: "InnerProduct"
+	bottom: "pool5"
+	top: "pred_attribute"
+	param {
+		lr_mult: 1
+		decay_mult: 1
+	}
+	param {
+		lr_mult: 2
+		decay_mult: 0
+	}
+	inner_product_param {
+		num_output: 26
+		weight_filler {
+			type: "gaussian"
+			std: 0.01
+		}
+		bias_filler {
+			type: "constant"
+			value: 0
+		}
+	}
 }
 
+layer {
+	type: 'Python'
+	name: "weighted_loss"
+	top: "weighted_loss"
+	bottom: "pred_attribute"
+	bottom: "gt_regression_attribute"
+	propagate_down: 1
+	propagate_down: 0
+	python_param {
+		module: "python_loss_layer"
+		layer: "TrainValWeightedSigmoidCrossEntropyLossLayer"
+	}
+	loss_weight: 1
+	loss_param {
+		ignore_label: -1
+	}
+	include {
+		phase: TRAIN
+	}
+}
 
 layer {
-  type: 'Python'
-  name: "weighted_loss"
-  top: 'weighted_loss'
-  bottom: "pred_attribute"
-  bottom: "gt_regression_attribute"
-  propagate_down: 1
-  propagate_down: 0
-  python_param {
-    # the module name -- usually the filename -- that needs to be in $PYTHONPATH
-    module: 'python_loss_layer'
-    # the layer name -- the class name in the module
-    layer: 'SigmoidFocalLossLayer'
-  }
-  # set loss weight so Caffe knows this is a loss layer.
-  # since PythonLayer inherits directly from Layer, this isn't automatically
-  # known to Caffe
-  loss_weight: 1
-  loss_param {
-    ignore_label: -1
-  }
+	type: 'Python'
+	name: "weighted_loss"
+	top: "weighted_loss"
+	bottom: "pred_attribute"
+	bottom: "gt_regression_attribute"
+	propagate_down: 1
+	propagate_down: 0
+	python_param {
+		module: "python_loss_layer"
+		layer: "SigmoidCrossEntropyLossLayer"
+	}
+	loss_weight: 1
+	loss_param {
+		ignore_label: -1
+	}
+	include {
+		phase: TEST
+	}
 }
