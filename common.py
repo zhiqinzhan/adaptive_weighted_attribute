@@ -28,27 +28,21 @@ class Pre_process(object):
 
 def load_PA100K(datadir='data/PA-100K/'):
 
-    def load_split(split_name, mirror=False):        
+    def load_split(split_name):        
         img_paths = [os.path.join(datadir, 'release_data', name[0][0]) \
             for name in annotation[split_name+'_images_name']]
-        img_array = np.zeros((len(img_paths), 3, config.img_height, config.img_width), dtype=np.int8)
-        for i in range(len(img_paths)):
-            img = cv2.imread(img_paths[i])
-            assert img is not None
-            img_array[i] = Pre_process.run(img, mirror)
-
+        
         lab_array = annotation[split_name+'_label'].astype(int)
         lab_array[lab_array == 0] = -1
 
-        assert len(img_array) == len(lab_array)
-        return {'img_array':img_array, 'lab_array':lab_array}
+        assert len(img_paths) == len(lab_array)
+        return {'img_paths':img_paths, 'lab_array':lab_array}
 
     annotation = sio.loadmat(os.path.join(datadir, 'annotation.mat'))
     dataset = {}
     dataset['train'] = load_split('train')
     dataset['val'] = load_split('val')
     dataset['test'] = load_split('test')
-    dataset['test_mirror'] = load_split('test', mirror=True)
     return dataset
 
 def load_CelebA():
@@ -63,3 +57,10 @@ def load_dataset(name):
         raise Exception("Unknown dataset: %s" % name)
 
 dataset = load_dataset(config.dataset_name)
+
+def load_caffe_batch(top, p0, split_name, idx_list):
+    for p, idx in enumerate(idx_list):
+        img = cv2.imread(dataset[split_name].img_paths[idx])
+        if img is not None:
+            top[0].data[p0+p] = Pre_process.run(img)
+            top[1].data[p0+p] = dataset[split_name].lab_array[idx]

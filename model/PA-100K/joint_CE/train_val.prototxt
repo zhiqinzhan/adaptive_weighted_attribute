@@ -8,7 +8,7 @@ layer {
 	python_param {
 		module: "python_data_layer"
 		layer: "JointDataLayer"
-		param_str: "{'split_name0': 'train', 'split_name1': 'val'}"
+		param_str: "{'split_name_0': 'train', 'split_name_1': 'val'}"
 	}
 	include {
 		phase: TRAIN
