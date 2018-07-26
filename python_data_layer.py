@@ -44,7 +44,7 @@ class JointDataLayer(caffe.Layer):
         self.lab_array1 = common.dataset[split_name1]["lab_array"]
         
         self.batch_size = config.batch_size
-        self.batch_size0 = config.batch_size0
+        self.batch_size0 = config.batch_size_0
 
         top[0].reshape(self.batch_size, 3, config.img_height, config.img_width)
         top[1].reshape(self.batch_size, self.lab_array0.shape[1])

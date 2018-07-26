@@ -1,4 +1,5 @@
 import os
+import cv2
 import caffe
 import numpy as np
 import scipy.io as sio
@@ -30,15 +31,13 @@ def load_PA100K(datadir='data/PA-100K/'):
     def load_split(split_name, mirror=False):        
         img_paths = [os.path.join(datadir, 'release_data', name[0][0]) \
             for name in annotation[split_name+'_images_name']]
-        img_array = []
+        img_array = np.zeros((len(img_paths), 3, config.img_height, config.img_width), dtype=np.int8)
         for i in range(len(img_paths)):
             img = cv2.imread(img_paths[i])
             assert img is not None
-            img = Pre_process.run(img, mirror)
-            img_array.append(img)
-        img_array = np.asarray(img_array)
+            img_array[i] = Pre_process.run(img, mirror)
 
-        lab_array = annotation[imgset+'_label'].astype(int)
+        lab_array = annotation[split_name+'_label'].astype(int)
         lab_array[lab_array == 0] = -1
 
         assert len(img_array) == len(lab_array)

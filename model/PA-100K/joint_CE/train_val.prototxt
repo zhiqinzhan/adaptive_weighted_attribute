@@ -20,7 +20,7 @@ layer {
 	type: "Python"
 	top: "data"
 	top: "gt_regression_attribute"
-	python_param{
+	python_param {
 		module: "python_data_layer"
 		layer: "DataLayer"
 		param_str: "{'split_name': 'val'}"
@@ -30,7 +30,7 @@ layer {
 	}
 }
 
-//----------------------------------------------------------------
+#----------------------------------------------------------------
 
 layer {
 	bottom: "data"
@@ -2328,7 +2328,7 @@ layer {
 	}
 }
 
-//----------------------------------------------------------------
+#----------------------------------------------------------------
 
 layer {
 	name: "pred_attribute"

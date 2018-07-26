@@ -11,7 +11,7 @@ pretrained_model = 'model/resnet_50/ResNet-50-model.caffemodel'
 train_gpu_id = 0
 
 test_prototxt = 'model/PA-100K/joint_CE/deploy.prototxt'
-test_model = 'output/saved_weighted_iter_130000.caffemodel'
+test_model = 'output/PA-100K/joint_CE/saved_weighted_iter_130000.caffemodel'
 test_gpu_id = 3
 
 # TODO

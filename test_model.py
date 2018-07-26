@@ -1,9 +1,10 @@
 import caffe
 import time
+import numpy as np
 
 import common
 import config
-from evaluate
+import evaluate
 
 caffe.set_mode_gpu()
 caffe.set_device(config.test_gpu_id)
