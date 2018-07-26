@@ -60,7 +60,7 @@ dataset = load_dataset(config.dataset_name)
 
 def load_caffe_batch(top, p0, split_name, idx_list):
     for p, idx in enumerate(idx_list):
-        img = cv2.imread(dataset[split_name].img_paths[idx])
+        img = cv2.imread(dataset[split_name]["img_paths"][idx])
         if img is not None:
             top[0].data[p0+p] = Pre_process.run(img)
-            top[1].data[p0+p] = dataset[split_name].lab_array[idx]
+            top[1].data[p0+p] = dataset[split_name]["lab_array"][idx]

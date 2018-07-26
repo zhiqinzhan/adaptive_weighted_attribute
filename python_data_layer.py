@@ -10,7 +10,7 @@ class DataLayer(caffe.Layer):
         params = eval(self.param_str)
         self.split_name = params["split_name"]
         self.batch_size = config.batch_size
-        self.img_num = common.dataset[self.split_name]["img_paths"].shape[0]
+        self.img_num = len(common.dataset[self.split_name]["img_paths"])
         self.lab_num = common.dataset[self.split_name]["lab_array"].shape[1]
 
         top[0].reshape(self.batch_size, 3, config.img_height, config.img_width)
@@ -34,8 +34,9 @@ class JointDataLayer(caffe.Layer):
         self.split_name_1 = params["split_name_1"]
         self.batch_size = config.batch_size
         self.batch_size_0 = config.batch_size_0
-        self.img_num_0 = common.dataset[self.split_name_0]["img_paths"].shape[0]
-        self.img_num_1 = common.dataset[self.split_name_1]["img_paths"].shape[0]
+        self.batch_size_1 = self.batch_size - self.batch_size_0
+        self.img_num_0 = len(common.dataset[self.split_name_0]["img_paths"])
+        self.img_num_1 = len(common.dataset[self.split_name_1]["img_paths"])
         self.lab_num = common.dataset[self.split_name_0]["lab_array"].shape[1]
 
         top[0].reshape(self.batch_size, 3, config.img_height, config.img_width)
