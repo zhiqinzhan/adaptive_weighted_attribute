@@ -2,7 +2,7 @@ import yaml
 import os
 
 dataset_name = "PA-100K"
-model_name = "basic_CE"
+model_name = "basic_CE_96x224"
 train_gpu_id = 1
 test_gpu_id = 3
 
