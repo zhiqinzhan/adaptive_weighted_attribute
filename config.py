@@ -3,7 +3,7 @@ import os
 
 dataset_name = "PA-100K"
 model_name = "basic_CE_96x224"
-train_gpu_id = 1
+train_gpu_id = 2
 test_gpu_id = 3
 
 with open(os.path.join("model", dataset_name, model_name, "config.yml"), "r") as f:

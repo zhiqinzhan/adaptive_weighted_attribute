@@ -2322,7 +2322,9 @@ layer {
 	name: "pool5"
 	type: "Pooling"
 	pooling_param {
-		kernel_size: 7
+		# kernel_size: 7
+		kernel_h: 7
+		kernel_w: 3
 		stride: 1
 		pool: AVE
 	}
