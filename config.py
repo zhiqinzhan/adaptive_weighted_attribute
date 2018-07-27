@@ -1,18 +1,24 @@
-img_width = 224
-img_height = 224
-
-batch_size = 18
-batch_size_0 = batch_size / 2 # TODO
+import yaml
+import os
 
 dataset_name = "PA-100K"
-
-train_prototxt = 'model/PA-100K/joint_CE/solver.prototxt'
-pretrained_model = 'model/resnet_50/ResNet-50-model.caffemodel'
+model_name = "joint_CE"
 train_gpu_id = 0
-
-test_prototxt = 'model/PA-100K/joint_CE/deploy.prototxt'
-test_model = 'output/PA-100K/joint_CE/saved_weighted_iter_130000.caffemodel'
 test_gpu_id = 3
+
+yml_config = yaml.load(open(os.path.join("model", dataset_name, model_name, "config.yml"), "r"))
+
+img_width = yml_config["img_width"]
+img_height = yml_config["img_height"]
+
+batch_size = yml_config["batch_size"]
+batch_size_0 = batch_size / 2 # TODO
+
+train_prototxt = os.path.join("model", dataset_name, model_name, "solver.prototxt")
+pretrained_model = 'model/resnet_50/ResNet-50-model.caffemodel'
+
+test_prototxt = os.path.join("model", dataset_name, model_name, "deploy.prototxt")
+test_model = os.path.join("output", dataset_name, model_name, "saved_weighted_iter_130000.caffemodel")
 
 # TODO
 # import numpy as np
