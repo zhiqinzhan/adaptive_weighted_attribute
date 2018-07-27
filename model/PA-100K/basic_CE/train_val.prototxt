@@ -7,8 +7,8 @@ layer {
 	top: "gt_regression_attribute"
 	python_param {
 		module: "python_data_layer"
-		layer: "JointDataLayer"
-		param_str: "{'split_name_0': 'train', 'split_name_1': 'val'}"
+		layer: "DataLayer"
+		param_str: "{'split_name': 'train'}"
 	}
 	include {
 		phase: TRAIN
@@ -2358,7 +2358,7 @@ layer {
 	propagate_down: 0
 	python_param {
 		module: "python_loss_layer"
-		layer: "TrainValWeightedSigmoidCrossEntropyLossLayer"
+		layer: "SigmoidCrossEntropyLossLayer"
 	}
 	loss_weight: 1
 	loss_param {
