@@ -1,0 +1,3 @@
+img_width: 96
+img_height: 224
+batch_size: 18
