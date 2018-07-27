@@ -6,7 +6,8 @@ model_name = "joint_CE"
 train_gpu_id = 0
 test_gpu_id = 3
 
-yml_config = yaml.load(open(os.path.join("model", dataset_name, model_name, "config.yml"), "r"))
+with open(os.path.join("model", dataset_name, model_name, "config.yml"), "r") as f:
+    yml_config = yaml.load(f)
 
 img_width = yml_config["img_width"]
 img_height = yml_config["img_height"]
