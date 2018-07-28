@@ -2,8 +2,8 @@ import yaml
 import os
 
 dataset_name = "PA-100K"
-model_name = "basic_CE_96x224_maxPool"
-train_gpu_id = 3
+model_name = "basic_CE_keep_ratio"
+train_gpu_id = 1
 test_gpu_id = 3
 
 with open(os.path.join("model", dataset_name, model_name, "config.yml"), "r") as f:
@@ -11,6 +11,11 @@ with open(os.path.join("model", dataset_name, model_name, "config.yml"), "r") as
 
 img_width = yml_config["img_width"]
 img_height = yml_config["img_height"]
+
+if "pre_process_method" in yml_config:
+    pre_process_method = yml_config["pre_process_method"]
+else:
+    pre_process_method = "default"
 
 batch_size = yml_config["batch_size"]
 batch_size_0 = batch_size / 2 # TODO

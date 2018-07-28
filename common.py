@@ -21,10 +21,40 @@ class Pre_process(object):
 
     @classmethod
     def run(cls, img, mirror=False):
+        if config.pre_process_method == "default":
+            return cls.default(img, mirror)
+        elif config.pre_process_method == "keep_ratio":
+            return cls.keep_ratio(img, mirror)
+        else:
+            raise Exception("Not implemented!")
+
+    @classmethod
+    def default(cls, img, mirror=False):
         img = cv2.resize(img, (cls.width, cls.height))
         if mirror:
             img = cv2.flip(img, 1)
         return np.transpose(img, (2, 0, 1)) - cls.mean
+    
+    @classmethod
+    def keep_ratio(cls, img, mirror=False):
+        h, w = img.shape[0 : 2]
+        if int(w * cls.height / h) > cls.width:
+            h = int(h * cls.width / w)
+            w = cls.width
+            h0 = int((cls.height - h) / 2)
+            w0 = 0
+        else:
+            w = int(w * cls.height / h)
+            h = cls.height
+            h0 = 0
+            w0 = int((cls.width - w) / 2)
+        img = cv2.resize(img, (w, h))
+        if mirror:
+            img = cv2.flip(img, 1)
+        img = np.transpose(img, (2, 0, 1)) - cls.mean[:, h0:h0+h, w0:w0+w]
+        result = np.zeros((3, cls.height, cls.width), dtype=np.float32)
+        result[:, h0:h0+h, w0:w0+w] = img
+        return result
 
 def load_PA100K(datadir='data/PA-100K/'):
 
