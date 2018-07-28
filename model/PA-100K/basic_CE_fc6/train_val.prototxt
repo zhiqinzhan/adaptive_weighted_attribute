@@ -2331,9 +2331,48 @@ layer {
 #----------------------------------------------------------------
 
 layer {
-	name: "pred_attribute"
+	name: "fc6"
 	type: "InnerProduct"
 	bottom: "pool5"
+	top: "fc6"
+	param {
+		lr_mult: 1
+	}
+	param {
+		lr_mult: 2
+	}
+	inner_product_param {
+		num_output: 4096
+		weight_filler {
+			type: "gaussian"
+			std: 0.01
+		}
+		bias_filler {
+			type: "constant"
+			value: 0
+		}
+	}
+}
+layer {
+	name: "relu6"
+	type: "ReLU"
+	bottom: "fc6"
+	top: "fc6"
+}
+layer {
+	name: "drop6"
+	type: "Dropout"
+	bottom: "fc6"
+	top: "fc6"
+	dropout_param {
+		dropout_ratio: 0.5
+	}
+}
+
+layer {
+	name: "pred_attribute"
+	type: "InnerProduct"
+	bottom: "fc6"
 	top: "pred_attribute"
 	inner_product_param {
 		num_output: 26
