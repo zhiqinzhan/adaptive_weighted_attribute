@@ -2317,8 +2317,8 @@ layer {
 
 layer {
 	bottom: "pred_attribute_map"
-	top: "pred_attribute"
-	name: "pred_attribute"
+	top: "pred_attribute_pool"
+	name: "pred_attribute_pool"
 	type: "Pooling"
 	pooling_param {
 		kernel_size: 7
@@ -2328,8 +2328,8 @@ layer {
 }
 
 layer {
-	bottom: "pred_attribute"
+	bottom: "pred_attribute_pool"
 	top: "pred_attribute"
-	name: "flatten"
+	name: "pred_attribute_flatten"
 	type: "Flatten"
 }
