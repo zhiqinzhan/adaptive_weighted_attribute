@@ -2316,6 +2316,20 @@ layer {
 }
 
 layer {
+	bottom: "pred_attribute_map"
+	top: "pred_attribute_map_reshape"
+	name: "pred_attribute_map_reshape"
+	type: "Reshape"
+	reshape_param {
+		shape {
+			dim: 0
+			dim: 0
+			dim: -1
+		}
+	}
+}
+
+layer {
 	bottom: "res5c"
 	top: "attention_map"
 	name: "attention_map"
@@ -2331,7 +2345,21 @@ layer {
 
 layer {
 	bottom: "attention_map"
-	top: "attention_map"
+	top: "attention_map_reshape"
+	name: "attention_map_reshape"
+	type: "Reshape"
+	reshape_param {
+		shape {
+			dim: 0
+			dim: 0
+			dim: -1
+		}
+	}
+}
+
+layer {
+	bottom: "attention_map_reshape"
+	top: "attention_map_softmax"
 	name: "attention_map_softmax"
 	type: "Softmax"
 	softmax_param {
@@ -2340,8 +2368,8 @@ layer {
 }
 
 layer {
-	bottom: "pred_attribute_map"
-	bottom: "attention_map"
+	bottom: "pred_attribute_map_reshape"
+	bottom: "attention_map_softmax"
 	top: "attended_map"
 	name: "attended_map"
 	type: "Eltwise"
