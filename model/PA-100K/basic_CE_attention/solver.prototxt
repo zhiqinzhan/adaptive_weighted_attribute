@@ -1,4 +1,4 @@
-net: "model/PA-100K/basic_CE_conv_1x1/train_val.prototxt"
+net: "model/PA-100K/basic_CE_attention/train_val.prototxt"
 test_iter: 50
 test_interval: 400
 base_lr: 0.0001
@@ -12,5 +12,5 @@ max_iter:  130000
 momentum: 0.9
 weight_decay: 0.0001
 snapshot: 5000
-snapshot_prefix: "output/PA-100K/basic_CE_conv_1x1/saved_weighted"
+snapshot_prefix: "output/PA-100K/basic_CE_attention/saved_weighted"
 solver_mode: GPU
