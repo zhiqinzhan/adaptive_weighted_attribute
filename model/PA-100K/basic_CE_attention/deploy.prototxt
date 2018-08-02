@@ -2316,20 +2316,47 @@ layer {
 }
 
 layer {
-	bottom: "pred_attribute_map"
-	top: "pred_attribute_pool"
-	name: "pred_attribute_pool"
-	type: "Pooling"
-	pooling_param {
-		kernel_size: 7
+	bottom: "res5c"
+	top: "attention_map"
+	name: "attention_map"
+	type: "Convolution"
+	convolution_param {
+		num_output: 26
+		kernel_size: 1
+		pad: 0
 		stride: 1
-		pool: MAX
+		bias_term: true
 	}
 }
 
 layer {
-	bottom: "pred_attribute_pool"
+	bottom: "attention_map"
+	top: "attention_map"
+	name: "attention_map_softmax"
+	type: "Softmax"
+	softmax_param {
+		axis: 2
+	}
+}
+
+layer {
+	bottom: "pred_attribute_map"
+	bottom: "attention_map"
+	top: "attended_map"
+	name: "attended_map"
+	type: "Eltwise"
+	eltwise_param {
+		operation: PROD
+	}
+}
+
+layer {
+	bottom: "attended_map"
 	top: "pred_attribute"
-	name: "pred_attribute_flatten"
-	type: "Flatten"
+	name: "pred_attribute"
+	type: "Reduction"
+	reduction_param {
+		operation: SUM
+		axis: 2
+	}
 }
