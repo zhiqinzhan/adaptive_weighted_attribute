@@ -2316,27 +2316,19 @@ layer {
 	type: "ReLU"
 }
 
-layer {
-	bottom: "res5c"
-	top: "pool5"
-	name: "pool5"
-	type: "Pooling"
-	pooling_param {
-		kernel_size: 7
-		stride: 1
-		pool: AVE
-	}
-}
-
 #----------------------------------------------------------------
 
 layer {
-	name: "pred_attribute"
-	type: "InnerProduct"
-	bottom: "pool5"
-	top: "pred_attribute"
-	inner_product_param {
+	bottom: "res5c"
+	top: "pred_attribute_map"
+	name: "pred_attribute_map"
+	type: "Convolution"
+	convolution_param {
 		num_output: 26
+		kernel_size: 1
+		pad: 0
+		stride: 1
+		bias_term: true
 		weight_filler {
 			type: "gaussian"
 			std: 0.01
@@ -2345,6 +2337,18 @@ layer {
 			type: "constant"
 			value: 0
 		}
+	}
+}
+
+layer {
+	bottom: "pred_attribute_map"
+	top: "pred_attribute"
+	name: "pred_attribute"
+	type: "Pooling"
+	pooling_param {
+		kernel_size: 7
+		stride: 1
+		pool: MAX
 	}
 }
 
