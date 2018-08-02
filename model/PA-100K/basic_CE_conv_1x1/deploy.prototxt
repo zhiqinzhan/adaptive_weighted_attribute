@@ -2326,3 +2326,10 @@ layer {
 		pool: MAX
 	}
 }
+
+layer {
+	bottom: "pred_attribute"
+	top: "pred_attribute"
+	name: "flatten"
+	type: "Flatten"
+}

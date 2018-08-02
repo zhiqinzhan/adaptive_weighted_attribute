@@ -2353,6 +2353,13 @@ layer {
 }
 
 layer {
+	bottom: "pred_attribute"
+	top: "pred_attribute"
+	name: "flatten"
+	type: "Flatten"
+}
+
+layer {
 	type: 'Python'
 	name: "weighted_loss"
 	top: "weighted_loss"
