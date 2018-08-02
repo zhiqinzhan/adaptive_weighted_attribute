@@ -2367,26 +2367,29 @@ layer {
 	top: "attention_map"
 	name: "attention_map_softmax"
 	type: "Softmax"
-}
-
-layer {
-	bottom: "pred_attribute_map"
-	bottom: "attention_map"
-	top: "pred_attribute_map"
-	name: "attention_apply"
-	type: "Eltwise"
-	eltwise_param {
-		operation: "PROD"
+	softmax_param {
+		axis: 2
 	}
 }
 
 layer {
 	bottom: "pred_attribute_map"
+	bottom: "attention_map"
+	top: "attended_map"
+	name: "attended_map"
+	type: "Eltwise"
+	eltwise_param {
+		operation: PROD
+	}
+}
+
+layer {
+	bottom: "attended_map"
 	top: "pred_attribute"
 	name: "pred_attribute"
 	type: "Reduction"
 	reduction_param {
-		operation: "SUM"
+		operation: SUM
 		axis: 2
 	}
 }
