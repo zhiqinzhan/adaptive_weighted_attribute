@@ -2394,10 +2394,7 @@ layer {
 	bottom: "attention_map_reshape"
 	top: "attention_map_softmax"
 	name: "attention_map_softmax"
-	type: "Softmax"
-	softmax_param {
-		axis: 2
-	}
+	type: "Sigmoid"
 }
 
 layer {
