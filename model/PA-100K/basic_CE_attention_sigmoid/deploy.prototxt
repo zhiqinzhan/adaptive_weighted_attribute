@@ -2381,7 +2381,7 @@ layer {
 	name: "pred_attribute"
 	type: "Reduction"
 	reduction_param {
-		operation: Sigmoid
-		axis: MEAN
+		operation: MEAN
+		axis: 2
 	}
 }
