@@ -2832,7 +2832,7 @@ layer {
 }
 
 layer {
-	bottom: "res5c"
+	bottom: "conv5_3"
 	top: "attention_map"
 	name: "attention_map"
 	type: "Convolution"
