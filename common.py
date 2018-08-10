@@ -6,8 +6,8 @@ import scipy.io as sio
 
 import config
 
-def load_resnet_mean(filepath="model/resnet_50"):
-    st = open(os.path.join(filepath, 'ResNet_mean.binaryproto'), "rb").read()
+def load_img_mean():
+    st = open(config.img_mean_file, "rb").read()
     bp = caffe.io.caffe_pb2.BlobProto.FromString(st)
     return caffe.io.blobproto_to_array(bp)[0]
 
@@ -15,7 +15,7 @@ class Pre_process(object):
 
     width = config.img_width
     height = config.img_height
-    mean = load_resnet_mean()
+    mean = load_img_mean()
     if width != 224 or height != 224:
         mean = np.transpose(cv2.resize(np.transpose(mean, (1, 2, 0)), (width, height)), (2, 0, 1))
 
