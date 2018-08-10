@@ -2,7 +2,7 @@ import yaml
 import os
 
 dataset_name = "PA-100K"
-model_name = "basic_CE_keep_ratio"
+model_name = "SE-ResNet"
 train_gpu_id = 1
 test_gpu_id = 3
 
