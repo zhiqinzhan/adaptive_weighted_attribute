@@ -2,8 +2,8 @@ import yaml
 import os
 
 dataset_name = "PA-100K"
-model_name = "SE-ResNet"
-train_gpu_id = 1
+model_name = "SE-ResNet_attentionV2"
+train_gpu_id = 0
 test_gpu_id = 3
 
 with open(os.path.join("model", dataset_name, model_name, "config.yml"), "r") as f:
