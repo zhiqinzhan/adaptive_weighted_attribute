@@ -2821,7 +2821,7 @@ layer {
   bottom: "global_info"
   top: "global_info_tile"
   tile_param {
-    axis: 1
+    axis: 2
     tiles: 49
   }
 }
@@ -2863,10 +2863,24 @@ layer {
 }
 
 layer {
+	bottom: "local_info"
+	top: "local_info_reshape"
+	name: "local_info_reshape"
+	type: "Reshape"
+	reshape_param {
+		shape {
+			dim: 0
+			dim: 0
+			dim: -1
+		}
+	}
+}
+
+layer {
   name: "sum_global_and_local"
   type: "Eltwise"
   bottom: "global_info_tile"
-  bottom: "local_info"
+  bottom: "local_info_reshape"
   top: "sum_global_and_local"
   eltwise_param {
     operation: SUM
