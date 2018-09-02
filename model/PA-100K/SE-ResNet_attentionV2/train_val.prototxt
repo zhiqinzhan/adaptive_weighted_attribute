@@ -2835,7 +2835,8 @@ layer {
 		shape {
 			dim: 0
 			dim: 0
-			dim: -1
+			dim: 7
+      dim: 7
 		}
 	}
 }
@@ -2863,67 +2864,21 @@ layer {
 }
 
 layer {
-	bottom: "local_info"
-	top: "local_info_reshape"
-	name: "local_info_reshape"
-	type: "Reshape"
-	reshape_param {
-		shape {
-			dim: 0
-			dim: 0
-			dim: -1
-		}
-	}
-}
-
-layer {
   name: "sum_info"
   type: "Eltwise"
   bottom: "global_info_reshape"
-  bottom: "local_info_reshape"
+  bottom: "local_info"
   top: "sum_info"
   eltwise_param {
     operation: SUM
   }
 }
-
+ 
 layer {
 	bottom: "sum_info"
 	top: "sum_info"
 	name: "sum_info_tanh"
 	type: "TanH"
-}
-
-layer {
-	bottom: "sum_info"
-	top: "attention_map"
-	name: "attention_map"
-	type: "Convolution"
-	convolution_param {
-		num_output: 26
-		kernel_size: 1
-		pad: 0
-		stride: 1
-		bias_term: true
-		weight_filler {
-			type: "gaussian"
-			std: 0.01
-		}
-		bias_filler {
-			type: "constant"
-			value: 0
-		}
-	}
-}
-
-layer {
-	bottom: "attention_map"
-	top: "attention_map_softmax"
-	name: "attention_map_softmax"
-	type: "Softmax"
-	softmax_param {
-		axis: 2
-	}
 }
 
 layer {
@@ -2959,6 +2914,52 @@ layer {
 			dim: 0
 			dim: -1
 		}
+	}
+}
+
+layer {
+	bottom: "sum_info"
+	top: "attention_map"
+	name: "attention_map"
+	type: "Convolution"
+	convolution_param {
+		num_output: 26
+		kernel_size: 1
+		pad: 0
+		stride: 1
+		bias_term: true
+		weight_filler {
+			type: "gaussian"
+			std: 0.01
+		}
+		bias_filler {
+			type: "constant"
+			value: 0
+		}
+	}
+}
+
+layer {
+	bottom: "attention_map"
+	top: "attention_map_reshape"
+	name: "attention_map_reshape"
+	type: "Reshape"
+	reshape_param {
+		shape {
+			dim: 0
+			dim: 0
+			dim: -1
+		}
+	}
+}
+
+layer {
+	bottom: "attention_map_reshape"
+	top: "attention_map_softmax"
+	name: "attention_map_softmax"
+	type: "Softmax"
+	softmax_param {
+		axis: 2
 	}
 }
 
