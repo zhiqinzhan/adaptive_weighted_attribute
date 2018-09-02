@@ -2863,6 +2863,17 @@ layer {
 }
 
 layer {
+  name: "sum_global_and_local"
+  type: "Eltwise"
+  bottom: "global_info_tile"
+  bottom: "local_info"
+  top: "sum_global_and_local"
+  eltwise_param {
+    operation: SUM
+  }
+}
+
+layer {
 	bottom: "conv5_3"
 	top: "pred_attribute_map"
 	name: "pred_attribute_map"
