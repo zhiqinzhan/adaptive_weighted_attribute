@@ -3,8 +3,8 @@ import os
 import numpy as np
 
 dataset_name = "PA-100K"
-model_name = "balanced_SE-ResNet"
-train_gpu_id = 0
+model_name = "balanced_SE-ResNet_attention_tanh"
+train_gpu_id = 1
 test_gpu_id = 3
 
 pos_ratio = np.array([
