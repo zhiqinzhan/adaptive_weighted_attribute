@@ -1,10 +1,17 @@
 import yaml
 import os
+import numpy as np
 
 dataset_name = "PA-100K"
 model_name = "SE-ResNet_attentionV2"
 train_gpu_id = 0
 test_gpu_id = 3
+
+pos_ratio = np.array([
+        45336, 1469, 92844, 5687, 34707, 30508, 34785, 4206, 18662,
+        18115, 19301, 15926, 958, 56913, 43087, 5088, 14835, 10917,
+        4219, 450, 1639, 3365, 71916, 16896, 11155, 595
+    ], dtype=np.float32) / 100000
 
 with open(os.path.join("model", dataset_name, model_name, "config.yml"), "r") as f:
     yml_config = yaml.load(f)
