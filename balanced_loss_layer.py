@@ -26,7 +26,9 @@ class balancedSigmoidCrossEntropyLossLayer(
         super(balancedSigmoidCrossEntropyLossLayer, self).backward(top, propagate_down, bottom)
         dropGradient(bottom)
 
-    
-
-    
-
+class balancedTrainValWeightedSigmoidCrossEntropyLossLayer(
+        python_loss_layer.TrainValWeightedSigmoidCrossEntropyLossLayer
+    ):
+    def backward(self, top, propagate_down, bottom):
+        super(balancedTrainValWeightedSigmoidCrossEntropyLossLayer, self).backward(top, propagate_down, bottom)
+        dropGradient(bottom)
