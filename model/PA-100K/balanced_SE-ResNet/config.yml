@@ -1,0 +1,7 @@
+img_width: 224
+img_height: 224
+batch_size: 16
+
+pretrained_model: model/SE-ResNet-50/SE-ResNet-50.caffemodel
+
+# mean_value: 104, 117, 123
