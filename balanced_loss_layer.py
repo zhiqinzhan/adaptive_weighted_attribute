@@ -23,7 +23,7 @@ class balancedSigmoidCrossEntropyLossLayer(
         python_loss_layer.SigmoidCrossEntropyLossLayer
     ):
     def backward(self, top, propagate_down, bottom):
-        super.backward(top, propagate_down, bottom)
+        super(balancedSigmoidCrossEntropyLossLayer, self).backward(top, propagate_down, bottom)
         dropGradient(bottom)
 
     
