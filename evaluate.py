@@ -86,12 +86,12 @@ def example_based(attr, gt):
 
 def attribute_based(attr, gt):
 	assert(attr.shape==gt.shape)
-
+	
 	TP = np.sum(np.logical_and(attr, gt), axis=0).astype(np.float32)
-    FN = np.sum(np.logical_and(np.logical_not(attr), gt), axis=0).astype(np.float32)
-    FP = np.sum(np.logical_and(attr, np.logical_not(gt)), axis=0).astype(np.float32)
-    TN = np.sum(np.logical_and(np.logical_not(attr), np.logical_not(gt)), axis=0).astype(np.float32)
-
+	FN = np.sum(np.logical_and(np.logical_not(attr), gt), axis=0).astype(np.float32)
+	FP = np.sum(np.logical_and(attr, np.logical_not(gt)), axis=0).astype(np.float32)
+	TN = np.sum(np.logical_and(np.logical_not(attr), np.logical_not(gt)), axis=0).astype(np.float32)
+	
 	precision = TP / (TP + FP)
 	recall = TP / (TP + FN)
 	f1 = (2 * TP) / (2 * TP + FP + FN)
