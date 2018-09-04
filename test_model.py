@@ -50,6 +50,7 @@ print "recall:", recall
 print "f1", f1
 print "accuracy:", accuracy
 
+"""
 print "-------- attribute-based --------"
 accuracy, precision, recall, f1 = evaluate.attribute_based(lab_pred, lab_gt)
 print "precision:", precision
@@ -60,3 +61,4 @@ print "f1", f1
 print "average f1:", np.mean(f1)
 print "accuracy:", accuracy
 print "average accuracy:", np.mean(accuracy)
+"""
