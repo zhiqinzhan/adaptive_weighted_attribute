@@ -19,6 +19,24 @@ def dropGradient(bottom):
             if y[b][a] == majority[a] and r[b][a] < majority_drop_rate[a]:
                 bottom[0].diff[b][a] = 0
 
+def dropGradient_HM(bottom, threshold, loss, skip_first_half=False):
+    batch_size = bottom[0].shape[0]
+    assert(attribute_size == bottom[0].shape[1])
+    y = bottom[1].data > 0 # ground-truth
+    r = np.random.rand(batch_size, attribute_size)
+    for b in range(batch_size):
+        if skip_first_half and b < batch_size / 2:
+            continue
+        for a in range(attribute_size):
+            if y[b][a] == majority[a]:
+                if loss[b][a] < threshold[a]:
+                    bottom[0].diff[b][a] = 0
+                    if r[b][a] > majority_drop_rate[a]:
+                        threshold[a] = loss[b][a]
+                else:
+                    if r[b][a] < majority_drop_rate[a]:
+                        threshold[a] = loss[b][a]
+
 class balancedSigmoidCrossEntropyLossLayer(
         python_loss_layer.SigmoidCrossEntropyLossLayer
     ):
@@ -32,3 +50,23 @@ class balancedTrainValWeightedSigmoidCrossEntropyLossLayer(
     def backward(self, top, propagate_down, bottom):
         super(balancedTrainValWeightedSigmoidCrossEntropyLossLayer, self).backward(top, propagate_down, bottom)
         dropGradient(bottom)
+
+class HM_SigmoidCrossEntropyLossLayer(
+        python_loss_layer.SigmoidCrossEntropyLossLayer
+    ):
+    def setup(self, bottom, top):
+        super(HM_SigmoidCrossEntropyLossLayer, self).setup(bottom, top)
+        self.threshold = np.zeros(attribute_size, dtype=np.float32)
+    def backward(self, top, propagate_down, bottom):
+        super(HM_SigmoidCrossEntropyLossLayer, self).backward(top, propagate_down, bottom)
+        dropGradient_HM(bottom, self.threshold, -self.log_pt)
+
+class HM_TrainValWeightedSigmoidCrossEntropyLossLayer(
+        python_loss_layer.TrainValWeightedSigmoidCrossEntropyLossLayer
+    ):
+    def setup(self, bottom, top):
+        super(HM_TrainValWeightedSigmoidCrossEntropyLossLayer, self).setup(bottom, top)
+        self.threshold = np.zeros(attribute_size, dtype=np.float32)
+    def backward(self, top, propagate_down, bottom):
+        super(HM_TrainValWeightedSigmoidCrossEntropyLossLayer, self).backward(top, propagate_down, bottom)
+        dropGradient_HM(bottom, self.threshold, -self.log_pt, skip_first_half=True)

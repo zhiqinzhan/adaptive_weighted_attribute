@@ -1,0 +1,16 @@
+net: "model/PA-100K/HM_SE-ResNet_joint/train_val.prototxt"
+test_iter: 50
+test_interval: 400
+base_lr: 0.0001
+lr_policy: "multistep"
+gamma: 0.1
+display: 50
+stepvalue: 70000
+stepvalue: 100000
+stepvalue: 120000
+max_iter:  130000
+momentum: 0.9
+weight_decay: 0.0001
+snapshot: 5000
+snapshot_prefix: "output/PA-100K/HM_SE-ResNet_joint/saved_weighted"
+solver_mode: GPU
