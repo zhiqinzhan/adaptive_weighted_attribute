@@ -1,6 +1,7 @@
 import numpy as np
 
 import config
+import common
 import python_loss_layer
 
 pos_ratio = common.dataset["train"]["pos_ratio"]
