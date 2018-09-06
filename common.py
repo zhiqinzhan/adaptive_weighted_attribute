@@ -65,8 +65,10 @@ def load_PA100K(datadir='data/PA-100K/'):
         lab_array = annotation[split_name+'_label'].astype(int)
         lab_array[lab_array == 0] = -1
 
+        pos_ratio = np.sum(lab_array==1, axis=0).astype(np.float32) / lab_array.shape[0]
+
         assert len(img_paths) == len(lab_array)
-        return {'img_paths':img_paths, 'lab_array':lab_array}
+        return {'img_paths':img_paths, 'lab_array':lab_array, 'pos_ratio':pos_ratio}
 
     annotation = sio.loadmat(os.path.join(datadir, 'annotation.mat'))
     dataset = {}
@@ -75,8 +77,37 @@ def load_PA100K(datadir='data/PA-100K/'):
     dataset['test'] = load_split('test')
     return dataset
 
-def load_CelebA():
-    raise Exception("Not implemented!")
+def load_CelebA(datadir='data/CelebA/'):
+
+    def load_split(split_name):
+        img_paths = []
+        lab_array = []
+        with open(os.path.join(datadir, "list_eval_partition.txt"), "r") as fS:
+            for line in fS.readlines():
+                (fn, sn) = line.split()
+                if sn == split_name:
+                    img_paths.append(os.path.join(datadir, "img_align_celeba", fn))
+                    lab_array.append(annotation[fn])
+        lab_array = np.asarray(lab_array, dtype=int)
+        
+        pos_ratio = np.sum(lab_array==1, axis=0).astype(np.float32) / lab_array.shape[0]
+        
+        assert len(img_paths) == len(lab_array)
+        return {'img_paths':img_paths, 'lab_array':lab_array, 'pos_ratio':pos_ratio}
+    
+    annotation = {}
+    with open(os.path.join(datadir, "list_attr_celeba.txt"), "r") as fA:
+        img_num = int(fA.readline())
+        attr_name = fA.readline().split()
+        for i in range(img_num):
+            line = fA.readline().split()
+            annotation[line[0]] = np.asarray(line[1:], dtype=int)
+    
+    dataset = {}
+    dataset['train'] = load_split('0')
+    dataset['val'] = load_split('1')
+    dataset['test'] = load_split('2')
+    return dataset
 
 def load_dataset(name):
     if name == "PA-100K":
